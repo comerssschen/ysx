@@ -28,8 +28,8 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
             .setViewPagerIsScroll(false) //是否支持手滑
             .start()
 
-        list.add(ViewItemBean(BannerConfig.IMAGE, null, Uri.parse("https://model-player.oss-cn-beijing.aliyuncs.com/bg_banner_blue.png"), 5 * 1000))
         list.add(ViewItemBean(BannerConfig.VIDEO, null, Uri.parse("http://vfx.mtime.cn/Video/2019/03/18/mp4/190318231014076505.mp4"), 10 * 1000))
+        list.add(ViewItemBean(BannerConfig.IMAGE, null, Uri.parse("https://model-player.oss-cn-beijing.aliyuncs.com/bg_banner_blue.png"), 5 * 1000))
         list.add(ViewItemBean(BannerConfig.IMAGE, null, Uri.parse("https://img.zcool.cn/community/01639a56fb62ff6ac725794891960d.jpg"), 5 * 1000))
         list.add(ViewItemBean(BannerConfig.IMAGE, null, Uri.parse("https://img.zcool.cn/community/01270156fb62fd6ac72579485aa893.jpg"), 5 * 1000))
         list.add(ViewItemBean(BannerConfig.VIDEO, null, Uri.parse("http://vfx.mtime.cn/Video/2019/03/19/mp4/190319125415785691.mp4"), 1 * 1000))

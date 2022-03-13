@@ -402,10 +402,10 @@ public class HBanner extends FrameLayout implements OnPageChangeListener {
     public void onStop() {
         if (isAutoPlay && count > 0) {
             if (subList.get(currentItem).getType() == BannerConfig.VIDEO) {
-                currentDelayTime = ((VideoView) subList.get(currentItem).getView()).getDuration();
-            } else {
-                currentDelayTime = subList.get(currentItem).getTime();
+                int duration = ((VideoView) subList.get(currentItem).getView()).getDuration();
+                if (duration > 0) subList.get(currentItem).setTime(duration);
             }
+            currentDelayTime = subList.get(currentItem).getTime();
         }
     }
 
@@ -626,20 +626,13 @@ public class HBanner extends FrameLayout implements OnPageChangeListener {
             startAutoPlay();
     }
 
-    int delayTime = 0;
-
     private void startAutoPlay() {
         handler.removeCallbacks(task);
-        if (count > 0) {
-            if (subList.get(currentItem).getType() == BannerConfig.VIDEO) {
-                delayTime = ((VideoView) subList.get(currentItem).getView()).getDuration();
-            } else {
-                delayTime = subList.get(currentItem).getTime();
-            }
-        } else {
-            delayTime = 0;
+        if (count > 0 && subList.get(currentItem).getType() == BannerConfig.VIDEO) {
+            int duration = ((VideoView) subList.get(currentItem).getView()).getDuration();
+            if (duration > 0) subList.get(currentItem).setTime(duration);
         }
-
+        int delayTime = count > 0 ? subList.get(currentItem).getTime() : 0;
         changeTime = System.currentTimeMillis() + delayTime;
         LogUtils.i(TAG, "startAutoPlay: " + delayTime);
         handler.postDelayed(task, delayTime);
@@ -676,33 +669,20 @@ public class HBanner extends FrameLayout implements OnPageChangeListener {
                 } else {
                     viewPager.setCurrentItem(currentItem);
                 }
-
-                if (count > 0) {
-                    if (subList.get(currentItem).getType() == BannerConfig.VIDEO) {
-                        delayTime = ((VideoView) subList.get(currentItem).getView()).getDuration();
-                    } else {
-                        delayTime = subList.get(currentItem).getTime();
-                    }
-                } else {
-                    delayTime = 0;
+                if (subList.get(currentItem).getType() == BannerConfig.VIDEO) {
+                    int duration = ((VideoView) subList.get(currentItem).getView()).getDuration();
+                    if (duration > 0) subList.get(currentItem).setTime(duration);
                 }
+                int delayTime = subList.get(currentItem).getTime();
                 LogUtils.i(TAG, "currentItem: " + currentItem + ",delayTime=" + delayTime);
                 changeTime = System.currentTimeMillis() + delayTime;
                 handler.postDelayed(task, delayTime);
             } else {
                 if (count == 1 && subList.size() > 1) {//单视频循环
                     if (subList.get(1).getType() == BannerConfig.VIDEO) {
-
-                        if (count > 0) {
-                            if (subList.get(1).getType() == BannerConfig.VIDEO) {
-                                delayTime = ((VideoView) subList.get(1).getView()).getDuration();
-                            } else {
-                                delayTime = subList.get(1).getTime();
-                            }
-                        } else {
-                            delayTime = 0;
-                        }
-
+                        int duration = ((VideoView) subList.get(1).getView()).getDuration();
+                        if (duration > 0) subList.get(1).setTime(duration);
+                        int delayTime = subList.get(1).getTime();
                         View view = subList.get(1).getView();
                         if (view instanceof VideoView) {
                             videoLoader.displayView(context, (VideoView) view);
