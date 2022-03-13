@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TouchScreen</string>
+
+    <string name="loading">loadding&#8230;</string>
+    <string name="press_again_to_exit">press again to exit</string>
+
+    <string name="confirm">确定</string>
+    <string name="cancle">取消</string>
+
+    <string name="login_name">请输入手机号</string>
+    <string name="login_pwd">请输入密码</string>
+
+</resources>

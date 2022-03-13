@@ -1,0 +1,3 @@
+rootProject.name = "TouchScreen"
+include ':app'
+include ':hbanner'
