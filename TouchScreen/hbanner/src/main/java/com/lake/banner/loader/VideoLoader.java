@@ -8,17 +8,21 @@ import android.widget.VideoView;
 import com.lake.banner.uitls.LogUtils;
 import com.lake.banner.uitls.MD5Util;
 import com.lake.banner.view.CustomVideoView;
+
 import java.io.File;
 
 /**
  * 视频代理实现
  */
 public class VideoLoader implements VideoViewLoaderInterface {
-    public VideoLoader() {
+    VideoCompletInterface mInterface;
+
+    public VideoLoader(VideoCompletInterface inter) {
+        mInterface = inter;
     }
 
     @Override
-    public VideoView createView(Context context,int gravity) {
+    public VideoView createView(Context context, int gravity) {
         //全屏拉伸 CustomVideoView(context)；
         CustomVideoView customVideoView = new CustomVideoView(context);
         customVideoView.setGravityType(gravity);
@@ -26,14 +30,14 @@ public class VideoLoader implements VideoViewLoaderInterface {
     }
 
     @Override
-    public void onPrepared(Context context, Object path, VideoView videoView,String cachePath) {
+    public void onPrepared(Context context, Object path, VideoView videoView, String cachePath) {
         try {
-            videoView.setOnPreparedListener(mp->{
+            videoView.setOnPreparedListener(mp -> {
                 LogUtils.e("auto", "videoView onPrepared");
             });
             videoView.setOnErrorListener((MediaPlayer mp, int what, int extra) -> {
                 //视频读取失败！
-                LogUtils.e("auto", "videoView error="+what);
+                LogUtils.e("auto", "videoView error=" + what);
                 return true;
             });
             if (path instanceof String) {
@@ -50,6 +54,9 @@ public class VideoLoader implements VideoViewLoaderInterface {
                     videoView.setVideoURI((Uri) path);
                 }
             }
+            videoView.setOnCompletionListener((MediaPlayer mp) -> {
+                mInterface.comlet();
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

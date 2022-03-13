@@ -30,6 +30,7 @@ import android.widget.VideoView;
 
 import com.lake.banner.listener.OnBannerListener;
 import com.lake.banner.loader.ImageLoader;
+import com.lake.banner.loader.VideoCompletInterface;
 import com.lake.banner.loader.VideoLoader;
 import com.lake.banner.loader.VideoViewLoaderInterface;
 import com.lake.banner.loader.ViewItem;
@@ -401,10 +402,6 @@ public class HBanner extends FrameLayout implements OnPageChangeListener {
 
     public void onStop() {
         if (isAutoPlay && count > 0) {
-            if (subList.get(currentItem).getType() == BannerConfig.VIDEO) {
-                int duration = ((VideoView) subList.get(currentItem).getView()).getDuration();
-                if (duration > 0) subList.get(currentItem).setTime(duration);
-            }
             currentDelayTime = subList.get(currentItem).getTime();
         }
     }
@@ -490,7 +487,12 @@ public class HBanner extends FrameLayout implements OnPageChangeListener {
         if (imageLoader == null)
             imageLoader = new ImageLoader();
         if (videoLoader == null)
-            videoLoader = new VideoLoader();
+            videoLoader = new VideoLoader(new VideoCompletInterface() {
+                @Override
+                public void comlet() {
+                    startAutoPlay(Math.max(0, currentDelayTime));
+                }
+            });
     }
 
     private void setBannerStyleUI() {
@@ -628,10 +630,6 @@ public class HBanner extends FrameLayout implements OnPageChangeListener {
 
     private void startAutoPlay() {
         handler.removeCallbacks(task);
-        if (count > 0 && subList.get(currentItem).getType() == BannerConfig.VIDEO) {
-            int duration = ((VideoView) subList.get(currentItem).getView()).getDuration();
-            if (duration > 0) subList.get(currentItem).setTime(duration);
-        }
         int delayTime = count > 0 ? subList.get(currentItem).getTime() : 0;
         changeTime = System.currentTimeMillis() + delayTime;
         LogUtils.i(TAG, "startAutoPlay: " + delayTime);
@@ -669,10 +667,6 @@ public class HBanner extends FrameLayout implements OnPageChangeListener {
                 } else {
                     viewPager.setCurrentItem(currentItem);
                 }
-                if (subList.get(currentItem).getType() == BannerConfig.VIDEO) {
-                    int duration = ((VideoView) subList.get(currentItem).getView()).getDuration();
-                    if (duration > 0) subList.get(currentItem).setTime(duration);
-                }
                 int delayTime = subList.get(currentItem).getTime();
                 LogUtils.i(TAG, "currentItem: " + currentItem + ",delayTime=" + delayTime);
                 changeTime = System.currentTimeMillis() + delayTime;
@@ -680,8 +674,6 @@ public class HBanner extends FrameLayout implements OnPageChangeListener {
             } else {
                 if (count == 1 && subList.size() > 1) {//单视频循环
                     if (subList.get(1).getType() == BannerConfig.VIDEO) {
-                        int duration = ((VideoView) subList.get(1).getView()).getDuration();
-                        if (duration > 0) subList.get(1).setTime(duration);
                         int delayTime = subList.get(1).getTime();
                         View view = subList.get(1).getView();
                         if (view instanceof VideoView) {

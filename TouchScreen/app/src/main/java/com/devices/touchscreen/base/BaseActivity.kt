@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 open class BaseActivity(val res: Int) : AppCompatActivity() {
     private lateinit var dialog: MyProgressFragment
     private var lastClickTime: Long = 0
-    private val spaceTime = 300
+    private val spaceTime = 100
 
     private val isAllowClick: Boolean
         get() {

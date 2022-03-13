@@ -7,7 +7,8 @@ public class BannerConfig {
      * banner
      */
     public static final int PADDING_SIZE = 5;
-    public static final int TIME = 10 * 1000;//默认时间
+    public static final int TIME = 5 * 1000;//默认时间
+    public static final int MAXTIME = 600 * 1000;//最大时间
     public static final int DURATION = 800;
     public static final boolean IS_AUTO_PLAY = true;
     public static final boolean IS_SCROLL = true;
