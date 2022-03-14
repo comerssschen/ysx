@@ -6,15 +6,18 @@ import android.os.Environment
 import android.view.View
 import com.blankj.utilcode.util.ClickUtils
 import com.devices.touchscreen.R
-import com.devices.touchscreen.base.BaseActivity
+import com.devices.touchscreen.base.BaseVmActivity
 import com.devices.touchscreen.common.ActivityHelper
+import com.devices.touchscreen.common.BusHelper
+import com.devices.touchscreen.viewmodel.MainViewModel
 import com.lake.banner.*
 import com.lake.banner.loader.ViewItemBean
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
 
-class MainActivity : BaseActivity(R.layout.activity_main) {
+class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
+    override fun viewModelClass() = MainViewModel::class.java
 
     val list: MutableList<ViewItemBean> = ArrayList()
     override fun initView() {
@@ -30,29 +33,68 @@ class MainActivity : BaseActivity(R.layout.activity_main) {
             .setShowTitle(false) //是否显示标题
             .setViewPagerIsScroll(false) //是否支持手滑
             .start()
-
-        list.add(ViewItemBean(BannerConfig.VIDEO, null, Uri.parse("http://vfx.mtime.cn/Video/2019/03/18/mp4/190318231014076505.mp4"), BannerConfig.MAXTIME))
-        list.add(ViewItemBean(BannerConfig.IMAGE, null, Uri.parse("https://model-player.oss-cn-beijing.aliyuncs.com/bg_banner_blue.png"), BannerConfig.TIME))
-        list.add(ViewItemBean(BannerConfig.IMAGE, null, Uri.parse("https://img.zcool.cn/community/01639a56fb62ff6ac725794891960d.jpg"), BannerConfig.TIME))
-        list.add(ViewItemBean(BannerConfig.IMAGE, null, Uri.parse("https://img.zcool.cn/community/01270156fb62fd6ac72579485aa893.jpg"), BannerConfig.TIME))
-        list.add(ViewItemBean(BannerConfig.VIDEO, null, Uri.parse("http://vfx.mtime.cn/Video/2019/03/19/mp4/190319125415785691.mp4"), BannerConfig.MAXTIME))
-        list.add(ViewItemBean(BannerConfig.VIDEO, null, Uri.parse("http://vfx.mtime.cn/Video/2019/03/14/mp4/190314223540373995.mp4"), BannerConfig.MAXTIME))
-        list.add(ViewItemBean(BannerConfig.IMAGE, null, Uri.parse("https://img.zcool.cn/community/01270156fb62fd6ac72579485aa893.jpg"), BannerConfig.TIME))
-        list.add(ViewItemBean(BannerConfig.VIDEO, null, Uri.parse("http://vfx.mtime.cn/Video/2019/03/14/mp4/190314102306987969.mp4"), BannerConfig.MAXTIME))
-        banner.update(list)
-
-        btJump.setOnClickListener { ActivityHelper.startActivity(ConfigActivity::class.java) }
-
-        clParent.setOnClickListener(object : ClickUtils.OnMultiClickListener(5) {
+        clParent.setOnClickListener(object : ClickUtils.OnMultiClickListener(10) {
             override fun onTriggerClick(v: View?) {
                 ActivityHelper.startActivity(ConfigActivity::class.java)
             }
 
-            override fun onBeforeTriggerClick(v: View?, count: Int) {
-
-            }
+            override fun onBeforeTriggerClick(v: View?, count: Int) {}
 
         })
+
+        tvComplaints.setOnClickListener { ActivityHelper.startActivity(ComplaintsActivity::class.java) }
+        tvEvaluation.setOnClickListener { ActivityHelper.startActivity(EvaluationActivity::class.java) }
+        tvToQCode.setOnClickListener {
+            tvComplaints.animate().x((-tvComplaints.width).toFloat()).setDuration(1000).start()
+            tvEvaluation.animate().x(window.decorView.width.toFloat()).setDuration(1000).start()
+            tvToQCode.animate().alpha(0f).setDuration(1000).start()
+            ivQrCode.animate().alpha(1f).setDuration(600).start()
+            tvTips.animate().alpha(1f).setDuration(600).start()
+            ivBack.animate().alpha(1f).setDuration(600).start()
+        }
+
+        ivBack.setOnClickListener {
+            tvComplaints.animate().x(locationLeft[0].toFloat()).setDuration(1000).start()
+            tvEvaluation.animate().x(locationRight[0].toFloat()).setDuration(1000).start()
+            tvToQCode.animate().alpha(1f).setDuration(1000).start()
+            ivQrCode.animate().alpha(0f).setDuration(600).start()
+            tvTips.animate().alpha(0f).setDuration(600).start()
+            ivBack.animate().alpha(0f).setDuration(600).start()
+        }
+
+    }
+
+    val locationLeft = IntArray(2)
+    val locationRight = IntArray(2)
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        tvComplaints.getLocationOnScreen(locationLeft)
+        tvEvaluation.getLocationOnScreen(locationRight)
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.getPublicPagePhoto()
+    }
+
+    override fun observe() {
+        super.observe()
+        BusHelper.observe<Boolean>("BannerUpdate", this) {
+            initData()
+        }
+        mViewModel.run {
+            publicPagePhoto.observe(this@MainActivity) { bean ->
+                list.clear()
+                bean.publicFrontPageList?.forEach { url ->
+                    if (url.endsWith(".mp4") || url.endsWith(".MP4")) {
+                        list.add(ViewItemBean(BannerConfig.VIDEO, null, Uri.parse(url), BannerConfig.MAXTIME))
+                    } else {
+                        list.add(ViewItemBean(BannerConfig.IMAGE, null, Uri.parse(url), BannerConfig.TIME))
+                    }
+                }
+                banner.update(list)
+            }
+        }
     }
 
     override fun onResume() {

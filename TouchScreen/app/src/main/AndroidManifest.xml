@@ -44,6 +44,16 @@
             android:configChanges="keyboard|keyboardHidden|screenSize|fontScale|density|orientation"
             android:exported="true"
             android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.ComplaintsActivity"
+            android:configChanges="keyboard|keyboardHidden|screenSize|fontScale|density|orientation"
+            android:exported="true"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".ui.EvaluationActivity"
+            android:configChanges="keyboard|keyboardHidden|screenSize|fontScale|density|orientation"
+            android:exported="true"
+            android:launchMode="singleTask" />
 
         <meta-data
             android:name="design_width_in_dp"

@@ -3,6 +3,8 @@ package com.devices.touchscreen.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.devices.touchscreen.base.BaseViewModel
 import com.devices.touchscreen.bean.DropDownBean
+import com.devices.touchscreen.common.RestDirection
+import com.devices.touchscreen.common.RestId
 import com.devices.touchscreen.net.RetrofitClient
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -18,6 +20,27 @@ class ConfigViewModel : BaseViewModel() {
         })
     }
 
+    val DirectionDropDownResult = MutableLiveData<ArrayList<DropDownBean>>()
+    fun getRestDirectionDropDown(restId: String) {
+        launch({
+            DirectionDropDownResult.value = RetrofitClient.apiService.getRestDirectionDropDown(restId).apiData()
+        }, isShowLoadding = false)
+    }
+
+
+    val submitConfigResult = MutableLiveData<Boolean>()
+    fun submitConfig(restId: String, restDirection: String, publicFrontPageList: Array<String>, inPage: String) {
+        launch({
+            RetrofitClient.apiService.submitConfig(
+                mapOf(
+                    "restId" to restId, "restDirection" to restDirection, "publicFrontPageList" to publicFrontPageList, "inPage" to inPage
+                )
+            ).apiData()
+            RestId = restId
+            RestDirection = restDirection
+            submitConfigResult.value = true
+        })
+    }
 
     val uploadImageResult = MutableLiveData<String>()
     fun uploadImage(file: File) {

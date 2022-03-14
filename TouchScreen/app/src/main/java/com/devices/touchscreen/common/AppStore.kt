@@ -2,26 +2,17 @@ package com.devices.touchscreen.common
 
 import com.blankj.utilcode.util.SPUtils
 
-fun isLogin() = token.isNotEmpty() && accountName.isNotEmpty()
+fun isLogin() = RestId.isNotEmpty() && RestDirection.isNotEmpty()
 
 fun loginOut() {
-    SPUtils.getInstance().remove("token")
-    SPUtils.getInstance().remove("mobile")
-    SPUtils.getInstance().remove("pwd")
+    SPUtils.getInstance().remove("restId")
+    SPUtils.getInstance().remove("restDirection")
 }
 
-var token: String
-    get() = SPUtils.getInstance().getString("token")
-    set(value) = SPUtils.getInstance().put("token", value)
+var RestId: String
+    get() = SPUtils.getInstance().getString("restId")
+    set(value) = SPUtils.getInstance().put("restId", value)
 
-var accountName: String
-    get() = SPUtils.getInstance().getString("accountName")
-    set(value) = SPUtils.getInstance().put("accountName", value)
-
-var accountPWD: String
-    get() = SPUtils.getInstance().getString("accountPWD")
-    set(value) = SPUtils.getInstance().put("accountPWD", value)
-
-var userInfo: String
-    get() = SPUtils.getInstance().getString("userInfo")
-    set(value) = SPUtils.getInstance().put("userInfo", value)
+var RestDirection: String
+    get() = SPUtils.getInstance().getString("restDirection")
+    set(value) = SPUtils.getInstance().put("restDirection", value)
