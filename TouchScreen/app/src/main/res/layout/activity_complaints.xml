@@ -1,6 +1,366 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_block">
 
+    <ImageView
+        android:id="@+id/ivBanner"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:src="@drawable/home_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivBanner" />
+
+    <TextView
+        android:id="@+id/tvComplintsHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="投诉建议"
+        android:textColor="@color/main_color"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivHome" />
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="43dp"
+        android:background="@drawable/edit_bg"
+        android:hint="请输入您的姓名(必填)"
+        android:maxLength="10"
+        android:padding="15dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvComplintsHeader" />
+
+    <EditText
+        android:id="@+id/etPhone"
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edit_bg"
+        android:hint="请输入您的手机号(必填)"
+        android:inputType="phone"
+        android:maxLength="15"
+        android:padding="15dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etName" />
+
+    <EditText
+        android:id="@+id/etOpinion"
+        android:layout_width="360dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edit_bg"
+        android:gravity="start"
+        android:hint="请留下您的宝贵意见：最多不超过50个字。"
+        android:inputType="phone"
+        android:maxLength="50"
+        android:padding="15dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPhone" />
+
+    <TextView
+        android:id="@+id/tvCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="0/50"
+        app:layout_constraintBottom_toBottomOf="@+id/etOpinion"
+        app:layout_constraintEnd_toEndOf="@+id/etOpinion" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btSubmit"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        android:paddingVertical="20dp"
+        android:text="提交"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:cornerRadius="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etOpinion" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupComplants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="btSubmit,etOpinion,etPhone,etName,tvCount,tvComplintsHeader" />
+
+    <TextView
+        android:id="@+id/tvTitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="您"
+        android:textColor="@color/main_color"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivHome" />
+
+    <TextView
+        android:id="@+id/tvTitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="是?"
+        android:textColor="@color/main_color"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvTitle1"
+        app:layout_constraintStart_toEndOf="@+id/tvTitle1" />
+
+    <LinearLayout
+        android:id="@+id/tvBigCarDriver"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/normal_bg"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@+id/tvLittlecarDriver"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle2">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/type_bigcar_driver" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="大客司机"
+            android:textColor="@color/color_33"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tvLittlecarDriver"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="80dp"
+        android:background="@drawable/normal_bg"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/tvBigCarDriver"
+        app:layout_constraintTop_toTopOf="@+id/tvBigCarDriver">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/type_littlecar_driver" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="小客司乘人员"
+            android:textColor="@color/color_33"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tvBigCar"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/normal_bg"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@+id/tvCarDriver"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBigCarDriver">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/type_bigcar_driver" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="大客乘客"
+            android:textColor="@color/color_33"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tvCarDriver"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="80dp"
+        android:background="@drawable/normal_bg"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/tvBigCar"
+        app:layout_constraintTop_toTopOf="@+id/tvBigCar">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/type_littlecar_driver" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="货车司机"
+            android:textColor="@color/color_33"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="110dp"
+        android:layout_marginTop="66dp"
+        android:paddingVertical="20dp"
+        android:text="下一页"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:cornerRadius="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBigCar" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tvTitle1,tvTitle2,tvBigCarDriver,btNext,tvCarDriver,tvBigCar,tvLittlecarDriver" />
+
+
+    <TextView
+        android:id="@+id/tvCurrentNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="1/8"
+        android:textColor="@color/main_color"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivHome" />
+
+    <TextView
+        android:id="@+id/tvTips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="加油站服务质量"
+        android:textColor="@color/main_color"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCurrentNum" />
+
+    <TextView
+        android:id="@+id/tvVerySatisfaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="满意"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tvSatisfaction"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTips" />
+
+    <TextView
+        android:id="@+id/tvSatisfaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="比较满意"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tvNoSatisfaction"
+        app:layout_constraintStart_toEndOf="@+id/tvVerySatisfaction"
+        app:layout_constraintTop_toTopOf="@+id/tvVerySatisfaction" />
+
+    <TextView
+        android:id="@+id/tvNoSatisfaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="不满意"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvSatisfaction"
+        app:layout_constraintTop_toTopOf="@+id/tvSatisfaction" />
+
+    <ImageView
+        android:id="@+id/ivVerySatisfaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/very_satisfaction"
+        app:layout_constraintEnd_toEndOf="@+id/tvVerySatisfaction"
+        app:layout_constraintStart_toStartOf="@+id/tvVerySatisfaction"
+        app:layout_constraintTop_toBottomOf="@+id/tvVerySatisfaction" />
+
+    <ImageView
+        android:id="@+id/ivSatisfaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/satisfaction"
+        app:layout_constraintEnd_toEndOf="@+id/tvSatisfaction"
+        app:layout_constraintStart_toStartOf="@+id/tvSatisfaction"
+        app:layout_constraintTop_toBottomOf="@+id/tvSatisfaction" />
+
+    <ImageView
+        android:id="@+id/ivNoSatisfaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/no_satisfaction"
+        app:layout_constraintEnd_toEndOf="@+id/tvNoSatisfaction"
+        app:layout_constraintStart_toStartOf="@+id/tvNoSatisfaction"
+        app:layout_constraintTop_toBottomOf="@+id/tvNoSatisfaction" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="ivVerySatisfaction,ivSatisfaction,ivNoSatisfaction,tvCurrentNum,tvTips,tvVerySatisfaction,tvSatisfaction,tvNoSatisfaction" />
 </androidx.constraintlayout.widget.ConstraintLayout>

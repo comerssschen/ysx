@@ -5,6 +5,7 @@
     android:id="@+id/clParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_block"
     tools:context=".ui.MainActivity">
 
     <com.lake.banner.HBanner
@@ -21,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:gravity="center"
-        android:text="建德服务区（杭向）\n 欢迎您！"
         android:textColor="@color/main_color"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -97,8 +97,8 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginTop="20dp"
-        android:alpha="0"
         android:src="@drawable/home_icon"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTips" />

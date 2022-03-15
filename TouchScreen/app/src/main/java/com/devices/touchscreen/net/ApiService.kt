@@ -24,6 +24,15 @@ interface ApiService {
     @GET("public/service/home/getPublicPagePhoto")
     suspend fun getPublicPagePhoto(@Query("restId") restId: String?, @Query("restDirection") restDirection: String?): ApiResult<BannerBean>
 
+    @GET("public/service/evaluation/getRestInfo")
+    suspend fun getRestInfo(@Query("restId") restId: String?, @Query("restDirection") restDirection: String?): ApiResult<RestInfoBean>
+
+    @GET("restQecode/downloadCode")
+    suspend fun downloadCode(@Query("restId") restId: String?, @Query("restDirection") restDirection: String?): ApiResult<String?>
+
     @POST("public/service/home/publicFrontPage")
     suspend fun submitConfig(@Body map: Map<String, Any?>): ApiResult<String?>
+
+    @POST("public/service/evaluation/addPublicComplain")
+    suspend fun addPublicComplain(@Body map: Map<String, Any?>): ApiResult<String?>
 }

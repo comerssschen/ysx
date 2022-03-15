@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Environment
 import android.view.View
+import androidx.core.view.isVisible
 import com.blankj.utilcode.util.ClickUtils
 import com.devices.touchscreen.R
 import com.devices.touchscreen.base.BaseVmActivity
@@ -42,24 +43,22 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
 
         })
 
-        tvComplaints.setOnClickListener { ActivityHelper.startActivity(ComplaintsActivity::class.java) }
-        tvEvaluation.setOnClickListener { ActivityHelper.startActivity(EvaluationActivity::class.java) }
         tvToQCode.setOnClickListener {
             tvComplaints.animate().x((-tvComplaints.width).toFloat()).setDuration(1000).start()
             tvEvaluation.animate().x(window.decorView.width.toFloat()).setDuration(1000).start()
-            tvToQCode.animate().alpha(0f).setDuration(1000).start()
             ivQrCode.animate().alpha(1f).setDuration(600).start()
             tvTips.animate().alpha(1f).setDuration(600).start()
-            ivBack.animate().alpha(1f).setDuration(600).start()
+            ivBack.isVisible = true
+            tvToQCode.isVisible = false
         }
 
         ivBack.setOnClickListener {
             tvComplaints.animate().x(locationLeft[0].toFloat()).setDuration(1000).start()
             tvEvaluation.animate().x(locationRight[0].toFloat()).setDuration(1000).start()
-            tvToQCode.animate().alpha(1f).setDuration(1000).start()
             ivQrCode.animate().alpha(0f).setDuration(600).start()
             tvTips.animate().alpha(0f).setDuration(600).start()
-            ivBack.animate().alpha(0f).setDuration(600).start()
+            ivBack.isVisible = false
+            tvToQCode.isVisible = true
         }
 
     }
@@ -74,7 +73,7 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
 
     override fun initData() {
         super.initData()
-        mViewModel.getPublicPagePhoto()
+        mViewModel.getInfo()
     }
 
     override fun observe() {
@@ -83,6 +82,9 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
             initData()
         }
         mViewModel.run {
+            restInfoResult.observe(this@MainActivity) {
+                tvName.text = "${it.restName}（${it.directionAliasName}）\n 欢迎您！"
+            }
             publicPagePhoto.observe(this@MainActivity) { bean ->
                 list.clear()
                 bean.publicFrontPageList?.forEach { url ->
@@ -93,6 +95,9 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
                     }
                 }
                 banner.update(list)
+
+                tvComplaints.setOnClickListener { ActivityHelper.startActivity(ComplaintsActivity::class.java, mapOf("BannerUrl" to bean.inPage, "Type" to 1)) }
+                tvEvaluation.setOnClickListener { ActivityHelper.startActivity(ComplaintsActivity::class.java, mapOf("BannerUrl" to bean.inPage, "Type" to 2)) }
             }
         }
     }
