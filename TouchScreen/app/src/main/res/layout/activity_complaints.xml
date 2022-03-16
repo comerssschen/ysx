@@ -71,7 +71,6 @@
         android:background="@drawable/edit_bg"
         android:gravity="start"
         android:hint="请留下您的宝贵意见：最多不超过50个字。"
-        android:inputType="phone"
         android:maxLength="50"
         android:padding="15dp"
         android:textSize="16sp"
@@ -352,15 +351,199 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:paddingVertical="10dp"
         android:src="@drawable/no_satisfaction"
         app:layout_constraintEnd_toEndOf="@+id/tvNoSatisfaction"
         app:layout_constraintStart_toStartOf="@+id/tvNoSatisfaction"
         app:layout_constraintTop_toBottomOf="@+id/tvNoSatisfaction" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btLeft"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:backgroundTint="@color/white"
+        android:paddingVertical="20dp"
+        android:text="上一项"
+        android:textColor="@color/main_color"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:cornerRadius="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/btRight"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivNoSatisfaction"
+        app:strokeColor="@color/main_color"
+        app:strokeWidth="2dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btRight"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="20dp"
+        android:text="下一项"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:cornerRadius="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btLeft"
+        app:layout_constraintTop_toTopOf="@+id/btLeft" />
+
+    <TextView
+        android:id="@+id/tvCommitDirectly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/tvCommit"
+        android:textColor="@color/main_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btRight" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="ivVerySatisfaction,ivSatisfaction,ivNoSatisfaction,tvCurrentNum,tvTips,tvVerySatisfaction,tvSatisfaction,tvNoSatisfaction" />
+        app:constraint_referenced_ids="tvCommitDirectly,btLeft,btRight,ivVerySatisfaction,ivSatisfaction,ivNoSatisfaction,tvCurrentNum,tvTips,tvVerySatisfaction,tvSatisfaction,tvNoSatisfaction" />
+
+    <TextView
+        android:id="@+id/tvCurrentNumEvaluation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="8/8"
+        android:textColor="@color/main_color"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivHome" />
+
+    <TextView
+        android:id="@+id/tvTipsEvaluation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="请您为我们评星！"
+        android:textColor="@color/main_color"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCurrentNumEvaluation" />
+
+    <ImageView
+        android:id="@+id/ivStart1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/start_n"
+        app:layout_constraintEnd_toStartOf="@+id/ivStart2"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTipsEvaluation" />
+
+    <ImageView
+        android:id="@+id/ivStart2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:src="@drawable/start_n"
+        app:layout_constraintEnd_toStartOf="@+id/ivStart3"
+        app:layout_constraintStart_toEndOf="@+id/ivStart1"
+        app:layout_constraintTop_toTopOf="@+id/ivStart1" />
+
+    <ImageView
+        android:id="@+id/ivStart3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/start_n"
+        app:layout_constraintEnd_toStartOf="@+id/ivStart4"
+        app:layout_constraintStart_toEndOf="@+id/ivStart2"
+        app:layout_constraintTop_toTopOf="@+id/ivStart1" />
+
+    <ImageView
+        android:id="@+id/ivStart4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:src="@drawable/start_n"
+        app:layout_constraintEnd_toStartOf="@+id/ivStart5"
+        app:layout_constraintStart_toEndOf="@+id/ivStart3"
+        app:layout_constraintTop_toTopOf="@+id/ivStart1" />
+
+    <ImageView
+        android:id="@+id/ivStart5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/start_n"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/ivStart4"
+        app:layout_constraintTop_toTopOf="@+id/ivStart1" />
+
+    <EditText
+        android:id="@+id/etEvaluation"
+        android:layout_width="360dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/edit_bg"
+        android:gravity="start"
+        android:hint="请留下您的宝贵意见：最多不超过50个字。"
+        android:maxLength="50"
+        android:padding="15dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivStart1" />
+
+    <TextView
+        android:id="@+id/tvCountEvaluation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="0/50"
+        app:layout_constraintBottom_toBottomOf="@+id/etEvaluation"
+        app:layout_constraintEnd_toEndOf="@+id/etEvaluation" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btLeftEvaluation"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/white"
+        android:paddingVertical="20dp"
+        android:text="上一项"
+        android:textColor="@color/main_color"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:cornerRadius="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/btRightEvaluation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etEvaluation"
+        app:strokeColor="@color/main_color"
+        app:strokeWidth="2dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btRightEvaluation"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="20dp"
+        android:text="提交"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:cornerRadius="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btLeftEvaluation"
+        app:layout_constraintTop_toTopOf="@+id/btLeftEvaluation" />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="tvCountEvaluation,etEvaluation,ivStart1,ivStart2,ivStart3,ivStart4,ivStart5,btRightEvaluation,btLeftEvaluation,tvCurrentNumEvaluation,tvTipsEvaluation" />
 </androidx.constraintlayout.widget.ConstraintLayout>

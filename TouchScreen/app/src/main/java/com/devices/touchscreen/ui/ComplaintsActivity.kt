@@ -1,8 +1,11 @@
 package com.devices.touchscreen.ui
 
+import android.os.CountDownTimer
+import android.view.MotionEvent
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.blankj.utilcode.util.RegexUtils
+import com.blankj.utilcode.util.ViewUtils
 import com.devices.touchscreen.R
 import com.devices.touchscreen.base.BaseVmActivity
 import com.devices.touchscreen.common.ActivityHelper
@@ -16,8 +19,17 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
     override fun viewModelClass() = ComplaintsViewModel::class.java
 
     var carType = 0
+    lateinit var mTimer: CountDownTimer
     override fun initView() {
         super.initView()
+        mTimer = object : CountDownTimer(10000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                ActivityHelper.finish(ComplaintsActivity::class.java)
+            }
+        }.start()
         groupComplants.isVisible = intent.getIntExtra("Type", 0) == 1
         group2.isVisible = intent.getIntExtra("Type", 0) == 2
 
@@ -57,8 +69,137 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
             if (carType == 0) {
                 showToast("请选择类型")
             } else {
+                startEvaluation()
             }
         }
+
+        tvVerySatisfaction.setOnClickListener { pointNext(1) }
+        ivVerySatisfaction.setOnClickListener { pointNext(1) }
+        tvSatisfaction.setOnClickListener { pointNext(2) }
+        ivSatisfaction.setOnClickListener { pointNext(2) }
+        tvNoSatisfaction.setOnClickListener { pointNext(3) }
+        ivNoSatisfaction.setOnClickListener { pointNext(3) }
+        btRight.setOnClickListener { pointNext(4) }
+        btLeft.setOnClickListener { pointNext(5) }
+        tvCommitDirectly.setOnClickListener {
+            group3.isVisible = false
+            group4.isVisible = true
+        }
+
+
+        ivStart1.setOnClickListener {
+            ivStart1.setImageResource(R.drawable.start_s)
+            ivStart2.setImageResource(R.drawable.start_n)
+            ivStart3.setImageResource(R.drawable.start_n)
+            ivStart4.setImageResource(R.drawable.start_n)
+            ivStart5.setImageResource(R.drawable.start_n)
+        }
+        ivStart2.setOnClickListener {
+            ivStart1.setImageResource(R.drawable.start_s)
+            ivStart2.setImageResource(R.drawable.start_s)
+            ivStart3.setImageResource(R.drawable.start_n)
+            ivStart4.setImageResource(R.drawable.start_n)
+            ivStart5.setImageResource(R.drawable.start_n)
+        }
+        ivStart3.setOnClickListener {
+            ivStart1.setImageResource(R.drawable.start_s)
+            ivStart2.setImageResource(R.drawable.start_s)
+            ivStart3.setImageResource(R.drawable.start_s)
+            ivStart4.setImageResource(R.drawable.start_n)
+            ivStart5.setImageResource(R.drawable.start_n)
+        }
+        ivStart4.setOnClickListener {
+            ivStart1.setImageResource(R.drawable.start_s)
+            ivStart2.setImageResource(R.drawable.start_s)
+            ivStart3.setImageResource(R.drawable.start_s)
+            ivStart4.setImageResource(R.drawable.start_s)
+            ivStart5.setImageResource(R.drawable.start_n)
+        }
+        ivStart5.setOnClickListener {
+            ivStart1.setImageResource(R.drawable.start_s)
+            ivStart2.setImageResource(R.drawable.start_s)
+            ivStart3.setImageResource(R.drawable.start_s)
+            ivStart4.setImageResource(R.drawable.start_s)
+            ivStart5.setImageResource(R.drawable.start_s)
+        }
+
+        etEvaluation.addTextChangedListener { tvCountEvaluation.text = "${it.toString().length}/50" }
+        btLeftEvaluation.setOnClickListener {
+            mCureentPosition = 6
+            notityImage()
+            group3.isVisible = true
+            group4.isVisible = false
+        }
+        btRightEvaluation.setOnClickListener {
+
+
+        }
+    }
+
+    private fun pointNext(status: Int) {
+        when (status) {
+            4 -> {
+                if (mCureentPosition < 6) {
+                    mCureentPosition++
+                    notityImage()
+                } else {
+                    group3.isVisible = false
+                    group4.isVisible = true
+                }
+            }
+            5 -> {
+                if (mCureentPosition > 0) {
+                    mCureentPosition--
+                    notityImage()
+                } else {
+                    group3.isVisible = false
+                    group2.isVisible = true
+                }
+            }
+            else -> {
+                mListStatus[mCureentPosition] = status
+                notityImage()
+                if (mCureentPosition < 6) {
+                    mCureentPosition++
+                    ViewUtils.runOnUiThreadDelayed({
+                        notityImage()
+                    }, 600)
+                } else {
+                    group3.isVisible = false
+                    group4.isVisible = true
+                }
+            }
+        }
+    }
+
+    private fun notityImage() {
+        tvCurrentNum.text = "${mCureentPosition + 1}/8"
+        tvTips.text = mListTips[mCureentPosition]
+        ivVerySatisfaction.setImageResource(R.drawable.very_satisfaction)
+        ivSatisfaction.setImageResource(R.drawable.satisfaction)
+        ivNoSatisfaction.setImageResource(R.drawable.no_satisfaction)
+        when (mListStatus[mCureentPosition]) {
+            1 -> {
+                ivVerySatisfaction.setImageResource(R.drawable.very_satisfaction_select)
+            }
+            2 -> {
+                ivSatisfaction.setImageResource(R.drawable.satisfaction_select)
+            }
+            3 -> {
+                ivNoSatisfaction.setImageResource(R.drawable.no_satisfaction_select)
+            }
+        }
+
+    }
+
+    var mCureentPosition = 0
+    var mListStatus = arrayListOf(0, 0, 0, 0, 0, 0, 0)
+    var mListTips = arrayListOf("停车服务", "卫生间清洁卫生", "餐饮价格", "商品价格", "汽车维修价格和质量", "加油站服务质量", "服务人员服务态度")
+    private fun startEvaluation() {
+        mCureentPosition = 0
+        group2.isVisible = false
+        group3.isVisible = true
+        notityImage()
     }
 
     private fun notifyBg() {
@@ -72,7 +213,7 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
             3 -> tvBigCar.setBackgroundResource(R.drawable.select_bg)
             4 -> tvCarDriver.setBackgroundResource(R.drawable.select_bg)
         }
-
+        startEvaluation()
     }
 
     override fun observe() {
@@ -84,4 +225,11 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
             }
         }
     }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        mTimer.cancel()
+        mTimer.start()
+        return super.dispatchTouchEvent(ev)
+    }
+
 }

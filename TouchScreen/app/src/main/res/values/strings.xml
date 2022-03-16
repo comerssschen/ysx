@@ -6,5 +6,6 @@
     <string name="confirm">确定</string>
     <string name="cancle">取消</string>
     <string name="toQrcode"><u>扫码评价</u></string>
+    <string name="tvCommit"><u>直接提交</u></string>
 
 </resources>

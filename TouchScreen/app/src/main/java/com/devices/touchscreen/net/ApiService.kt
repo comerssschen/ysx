@@ -2,6 +2,7 @@ package com.devices.touchscreen.net
 
 import com.devices.touchscreen.bean.*
 import okhttp3.MultipartBody
+import okhttp3.ResponseBody
 import retrofit2.http.*
 
 @JvmSuppressWildcards
@@ -28,7 +29,7 @@ interface ApiService {
     suspend fun getRestInfo(@Query("restId") restId: String?, @Query("restDirection") restDirection: String?): ApiResult<RestInfoBean>
 
     @GET("restQecode/downloadCode")
-    suspend fun downloadCode(@Query("restId") restId: String?, @Query("restDirection") restDirection: String?): ApiResult<String?>
+    suspend fun downloadCode(@Query("restId") restId: String?, @Query("restDirection") restDirection: String?): ResponseBody
 
     @POST("public/service/home/publicFrontPage")
     suspend fun submitConfig(@Body map: Map<String, Any?>): ApiResult<String?>

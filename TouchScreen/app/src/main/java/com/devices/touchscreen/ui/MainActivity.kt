@@ -6,6 +6,7 @@ import android.os.Environment
 import android.view.View
 import androidx.core.view.isVisible
 import com.blankj.utilcode.util.ClickUtils
+import com.bumptech.glide.Glide
 import com.devices.touchscreen.R
 import com.devices.touchscreen.base.BaseVmActivity
 import com.devices.touchscreen.common.ActivityHelper
@@ -82,6 +83,9 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
             initData()
         }
         mViewModel.run {
+            downloadCodeResult.observe(this@MainActivity) {
+                Glide.with(this@MainActivity).load(File(it)).into(ivQrCode)
+            }
             restInfoResult.observe(this@MainActivity) {
                 tvName.text = "${it.restName}（${it.directionAliasName}）\n 欢迎您！"
             }
