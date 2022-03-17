@@ -3,6 +3,7 @@ package com.devices.touchscreen.ui
 import android.graphics.Color
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import com.blankj.utilcode.util.ClickUtils
@@ -11,6 +12,8 @@ import com.devices.touchscreen.R
 import com.devices.touchscreen.base.BaseVmActivity
 import com.devices.touchscreen.common.ActivityHelper
 import com.devices.touchscreen.common.BusHelper
+import com.devices.touchscreen.common.RestId
+import com.devices.touchscreen.view.InputDialog
 import com.devices.touchscreen.viewmodel.MainViewModel
 import com.lake.banner.*
 import com.lake.banner.loader.ViewItemBean
@@ -37,31 +40,33 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
             .start()
         clParent.setOnClickListener(object : ClickUtils.OnMultiClickListener(10) {
             override fun onTriggerClick(v: View?) {
-                ActivityHelper.startActivity(ConfigActivity::class.java)
+                InputDialog(this@MainActivity) {
+                    ActivityHelper.startActivity(ConfigActivity::class.java)
+                }.show()
             }
 
             override fun onBeforeTriggerClick(v: View?, count: Int) {}
 
         })
-
         tvToQCode.setOnClickListener {
-            tvComplaints.animate().x((-tvComplaints.width).toFloat()).setDuration(1000).start()
-            tvEvaluation.animate().x(window.decorView.width.toFloat()).setDuration(1000).start()
-            ivQrCode.animate().alpha(1f).setDuration(600).start()
+            if (RestId.isEmpty()) {
+                return@setOnClickListener
+            }
+            tvComplaints.animate().x((-tvComplaints.width).toFloat()).setDuration(800).start()
+            tvEvaluation.animate().x(window.decorView.width.toFloat()).setDuration(800).start()
+            rlQrCode.animate().alpha(1f).setDuration(600).start()
             tvTips.animate().alpha(1f).setDuration(600).start()
             ivBack.isVisible = true
             tvToQCode.isVisible = false
         }
-
         ivBack.setOnClickListener {
-            tvComplaints.animate().x(locationLeft[0].toFloat()).setDuration(1000).start()
-            tvEvaluation.animate().x(locationRight[0].toFloat()).setDuration(1000).start()
-            ivQrCode.animate().alpha(0f).setDuration(600).start()
+            tvComplaints.animate().x(locationLeft[0].toFloat()).setDuration(800).start()
+            tvEvaluation.animate().x(locationRight[0].toFloat()).setDuration(800).start()
+            rlQrCode.animate().alpha(0f).setDuration(600).start()
             tvTips.animate().alpha(0f).setDuration(600).start()
             ivBack.isVisible = false
-            tvToQCode.isVisible = true
+            tvToQCode.postDelayed({ tvToQCode.isVisible = true }, 600)
         }
-
     }
 
     val locationLeft = IntArray(2)
@@ -74,7 +79,13 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
 
     override fun initData() {
         super.initData()
-        mViewModel.getInfo()
+        if (RestId.isEmpty()) {
+            InputDialog(this@MainActivity) {
+                ActivityHelper.startActivity(ConfigActivity::class.java)
+            }.show()
+        } else {
+            mViewModel.getInfo()
+        }
     }
 
     override fun observe() {
@@ -113,6 +124,7 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
 
     override fun onPause() {
         banner.onPause()
+        Log.i("test", "onPause")
         super.onPause()
     }
 

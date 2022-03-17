@@ -36,4 +36,7 @@ interface ApiService {
 
     @POST("public/service/evaluation/addPublicComplain")
     suspend fun addPublicComplain(@Body map: Map<String, Any?>): ApiResult<String?>
+
+    @POST("public/service/evaluation/addPublicEvaluation")
+    suspend fun addPublicEvaluation(@Body map: Map<String, Any?>): ApiResult<String?>
 }

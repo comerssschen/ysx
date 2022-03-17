@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
+import com.blankj.utilcode.util.BarUtils
 
 open class BaseActivity(val res: Int) : AppCompatActivity() {
     private lateinit var dialog: MyProgressFragment
@@ -21,6 +22,8 @@ open class BaseActivity(val res: Int) : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(res)
+        BarUtils.setStatusBarVisibility(this, false)
+        BarUtils.setNavBarVisibility(this, false)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         initView()
     }

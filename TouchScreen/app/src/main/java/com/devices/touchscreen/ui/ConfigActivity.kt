@@ -1,10 +1,14 @@
 package com.devices.touchscreen.ui
 
 import android.content.pm.ActivityInfo
+import android.graphics.BitmapFactory
+import android.media.MediaMetadataRetriever
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.FileUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -51,12 +55,15 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
                 showToast("请选择服务区")
                 return@setOnClickListener
             }
+            if (bannerUrl.isEmpty() || imageList.size < 1) {
+                showToast("请上传图片")
+                return@setOnClickListener
+            }
             mViewModel.submitConfig(restId, restDirection, imageList.toTypedArray(), bannerUrl)
         }
     }
 
     private fun selectFile() {
-
         val model = PictureSelector.create(this)
             .openGallery(
                 if (uploadType == 3) {
@@ -73,11 +80,45 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
                 override fun onCancel() {}
                 override fun onResult(result: ArrayList<LocalMedia>) {
                     if (result.size != 0) {
-                        mViewModel.uploadImage(File(result[0].realPath))
+                        if (fireIsAvailble(result[0].realPath)) {
+                            mViewModel.uploadImage(File(result[0].realPath))
+                        } else {
+                            showToast("图片或视频不符合要求")
+                        }
+
                     }
                 }
 
             })
+    }
+
+    private fun fireIsAvailble(realPath: String): Boolean {
+        if (realPath.endsWith(".jpeg") || realPath.endsWith(".jpg") || realPath.endsWith(".png")
+            || realPath.endsWith(".JPEG") || realPath.endsWith(".JPG") || realPath.endsWith(".PNG")
+        ) {
+//首页图片尺寸1080X608,内页图片 尺寸1080X400，不超过2M。
+            if (FileUtils.getFileLength(realPath) > 2 * 1024 * 1024) {
+                return false
+            }
+            BitmapFactory.decodeFile(realPath).apply {
+                Log.i("test", "width= $width,,hight = $height")
+                if (width != 1080) return false
+                if (height != 608 || height != 400) return false
+                return true
+            }
+        } else if (realPath.endsWith("mp4") || realPath.endsWith("MP4")) {
+// 视频比例16：9，大小不超过100M。格式MP4
+            if (FileUtils.getFileLength(realPath) > 100 * 1024 * 1024) {
+                return false
+            }
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(realPath)
+            val width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toInt()
+            val height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toInt()
+            Log.i("test", "width= $width,,height = $height")
+            return true
+        }
+        return false
     }
 
     override fun initData() {
@@ -111,7 +152,7 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
             imageList.removeAt(position)
             mAdapter?.setList(imageList)
             if (imageList.size >= 5) {
-                ivPhoto.visibility = View.INVISIBLE
+                ivPhoto.visibility = View.GONE
             } else {
                 ivPhoto.visibility = View.VISIBLE
             }
@@ -157,7 +198,7 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
                     if (uploadType == 1) {
                         imageList.add(it)
                         if (imageList.size >= 5) {
-                            ivPhoto.visibility = View.INVISIBLE
+                            ivPhoto.visibility = View.GONE
                         } else {
                             ivPhoto.visibility = View.VISIBLE
                         }

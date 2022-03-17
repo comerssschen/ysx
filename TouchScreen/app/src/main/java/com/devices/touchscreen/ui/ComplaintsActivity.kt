@@ -12,6 +12,7 @@ import com.devices.touchscreen.common.ActivityHelper
 import com.devices.touchscreen.common.GlideEngine
 import com.devices.touchscreen.common.showToast
 import com.devices.touchscreen.common.toStr
+import com.devices.touchscreen.view.CommonDialog
 import com.devices.touchscreen.viewmodel.ComplaintsViewModel
 import kotlinx.android.synthetic.main.activity_complaints.*
 
@@ -19,7 +20,7 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
     override fun viewModelClass() = ComplaintsViewModel::class.java
 
     var carType = 0
-    lateinit var mTimer: CountDownTimer
+    var mTimer: CountDownTimer? = null
     override fun initView() {
         super.initView()
         mTimer = object : CountDownTimer(10000, 1000) {
@@ -34,10 +35,20 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
         group2.isVisible = intent.getIntExtra("Type", 0) == 2
 
         etOpinion.addTextChangedListener {
+            mTimer?.cancel()
+            mTimer?.start()
             tvCount.text = "${it.toString().length}/50"
         }
         intent.getStringExtra("BannerUrl")?.let { GlideEngine.createGlideEngine().loadImage(this, it, ivBanner) }
-        ivHome.setOnClickListener { ActivityHelper.finish(ComplaintsActivity::class.java) }
+        ivHome.setOnClickListener {
+            if (carType > 0) {
+                CommonDialog(this, "您的操作将被清空\n继续返回首页？") {
+                    ActivityHelper.finish(ComplaintsActivity::class.java)
+                }.show()
+            } else {
+                ActivityHelper.finish(ComplaintsActivity::class.java)
+            }
+        }
         btSubmit.setOnClickListener {
             when {
                 etName.toStr().isEmpty() -> showToast("请输入姓名")
@@ -88,6 +99,7 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
 
 
         ivStart1.setOnClickListener {
+            satisfaction = 1
             ivStart1.setImageResource(R.drawable.start_s)
             ivStart2.setImageResource(R.drawable.start_n)
             ivStart3.setImageResource(R.drawable.start_n)
@@ -95,6 +107,7 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
             ivStart5.setImageResource(R.drawable.start_n)
         }
         ivStart2.setOnClickListener {
+            satisfaction = 2
             ivStart1.setImageResource(R.drawable.start_s)
             ivStart2.setImageResource(R.drawable.start_s)
             ivStart3.setImageResource(R.drawable.start_n)
@@ -102,6 +115,7 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
             ivStart5.setImageResource(R.drawable.start_n)
         }
         ivStart3.setOnClickListener {
+            satisfaction = 3
             ivStart1.setImageResource(R.drawable.start_s)
             ivStart2.setImageResource(R.drawable.start_s)
             ivStart3.setImageResource(R.drawable.start_s)
@@ -109,6 +123,7 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
             ivStart5.setImageResource(R.drawable.start_n)
         }
         ivStart4.setOnClickListener {
+            satisfaction = 4
             ivStart1.setImageResource(R.drawable.start_s)
             ivStart2.setImageResource(R.drawable.start_s)
             ivStart3.setImageResource(R.drawable.start_s)
@@ -116,6 +131,7 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
             ivStart5.setImageResource(R.drawable.start_n)
         }
         ivStart5.setOnClickListener {
+            satisfaction = 5
             ivStart1.setImageResource(R.drawable.start_s)
             ivStart2.setImageResource(R.drawable.start_s)
             ivStart3.setImageResource(R.drawable.start_s)
@@ -123,7 +139,11 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
             ivStart5.setImageResource(R.drawable.start_s)
         }
 
-        etEvaluation.addTextChangedListener { tvCountEvaluation.text = "${it.toString().length}/50" }
+        etEvaluation.addTextChangedListener {
+            mTimer?.cancel()
+            mTimer?.start()
+            tvCountEvaluation.text = "${it.toString().length}/50"
+        }
         btLeftEvaluation.setOnClickListener {
             mCureentPosition = 6
             notityImage()
@@ -131,11 +151,15 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
             group4.isVisible = false
         }
         btRightEvaluation.setOnClickListener {
-
-
+            if (satisfaction == 0) {
+                showToast("您需要评星级才能提交")
+                return@setOnClickListener
+            }
+            mViewModel.addPublicEvaluation(satisfaction, mListStatus, etEvaluation.toStr())
         }
     }
 
+    var satisfaction = 0
     private fun pointNext(status: Int) {
         when (status) {
             4 -> {
@@ -220,15 +244,27 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
         super.observe()
         mViewModel.run {
             publicComplainResult.observe(this@ComplaintsActivity) {
-                ActivityHelper.startActivity(ComplaintsActivity::class.java)
+                ActivityHelper.startActivity(ComplaintsActivity::class.java, mapOf("type" to "投诉建议"))
+                ActivityHelper.finish(ComplaintsSucessActivity::class.java)
+            }
+            publicEvaluationResult.observe(this@ComplaintsActivity) {
+                ActivityHelper.startActivity(ComplaintsActivity::class.java, mapOf("type" to "评价"))
                 ActivityHelper.finish(ComplaintsSucessActivity::class.java)
             }
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mTimer?.cancel()
+        mTimer = null
+    }
+
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        mTimer.cancel()
-        mTimer.start()
+        if (ev.action == MotionEvent.ACTION_DOWN || ev.action == MotionEvent.ACTION_MOVE) {
+            mTimer?.cancel()
+            mTimer?.start()
+        }
         return super.dispatchTouchEvent(ev)
     }
 

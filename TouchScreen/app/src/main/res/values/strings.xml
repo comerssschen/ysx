@@ -7,5 +7,8 @@
     <string name="cancle">取消</string>
     <string name="toQrcode"><u>扫码评价</u></string>
     <string name="tvCommit"><u>直接提交</u></string>
+    <string name="tips">        首页可以上传图片和视频，最多可上传5个;内页banner只能上传一张图片\n\n        首页图片尺寸1080X608,内页图片
+    尺寸1080X400，不超过2M。格式jpeg jpg png\n\n        视频比例16：9，大小不超过100M。格式MP4
+    </string>
 
 </resources>

@@ -6,6 +6,7 @@
     android:background="@drawable/bg_block">
 
     <TextView
+        android:id="@+id/tvTips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
@@ -23,15 +24,16 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btFinish"
-        android:layout_width="160dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="200dp"
         android:backgroundTint="@color/white"
-        android:paddingVertical="20dp"
+        android:paddingVertical="10dp"
         android:text="返回首页(5s)"
         android:textColor="@color/main_color"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:cornerRadius="20dp"
+        app:cornerRadius="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

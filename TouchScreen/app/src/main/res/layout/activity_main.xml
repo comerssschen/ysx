@@ -20,7 +20,7 @@
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="60dp"
         android:gravity="center"
         android:textColor="@color/main_color"
         android:textSize="30sp"
@@ -33,20 +33,22 @@
         android:id="@+id/tvComplaints"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:drawableTop="@drawable/home_icon"
+        android:layout_marginTop="4dp"
+        android:drawableTop="@drawable/btn_complaint"
         android:text="我要投诉"
         android:textColor="@color/main_color"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/rlQrCode"
         app:layout_constraintEnd_toStartOf="@+id/tvEvaluation"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        app:layout_constraintTop_toTopOf="@+id/rlQrCode" />
 
     <TextView
         android:id="@+id/tvEvaluation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableTop="@drawable/home_icon"
+        android:layout_marginTop="4dp"
+        android:drawableTop="@drawable/btn_appraise"
         android:text="我要评价"
         android:textColor="@color/main_color"
         android:textSize="16sp"
@@ -62,22 +64,57 @@
         android:padding="5dp"
         android:text="@string/toQrcode"
         android:textColor="@color/main_color"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvComplaints" />
 
 
-    <ImageView
-        android:id="@+id/ivQrCode"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+    <RelativeLayout
+        android:id="@+id/rlQrCode"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:layout_marginTop="30dp"
         android:alpha="0"
-        android:src="@mipmap/ic_launcher"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvName">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="90"
+            android:src="@drawable/qrline" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:rotation="180"
+            android:src="@drawable/qrline" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/qrline" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:rotation="270"
+            android:src="@drawable/qrline" />
+
+        <ImageView
+            android:id="@+id/ivQrCode"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="30dp" />
+    </RelativeLayout>
+
 
     <TextView
         android:id="@+id/tvTips"
@@ -90,14 +127,14 @@
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivQrCode" />
+        app:layout_constraintTop_toBottomOf="@+id/rlQrCode" />
 
     <ImageView
         android:id="@+id/ivBack"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginTop="20dp"
-        android:src="@drawable/home_icon"
+        android:src="@drawable/back"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
