@@ -23,7 +23,7 @@ open class BaseActivity(val res: Int) : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(res)
         BarUtils.setStatusBarVisibility(this, false)
-        BarUtils.setNavBarVisibility(this, false)
+//        BarUtils.setNavBarVisibility(this, false)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         initView()
     }
