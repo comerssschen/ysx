@@ -2,28 +2,31 @@ package com.devices.touchscreen.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.devices.touchscreen.base.BaseViewModel
+import com.devices.touchscreen.bean.AddPublicComplainBean
 import com.devices.touchscreen.bean.DropDownBean
 import com.devices.touchscreen.bean.EvaluateDetailBean
-import com.devices.touchscreen.common.RestDirection
-import com.devices.touchscreen.common.RestId
 import com.devices.touchscreen.net.RetrofitClient
+import com.devices.touchscreen.room.complaints.RoomComplaintsHelper
+import com.devices.touchscreen.room.evaluation.RoomHelper
+import kotlin.concurrent.thread
 
 class ComplaintsViewModel : BaseViewModel() {
 
     val publicComplainResult = MutableLiveData<Boolean>()
     fun addPublicComplain(complainant: String, complainantPhoneNo: String, description: String) {
+        val bean = AddPublicComplainBean()
+        bean.complainant = complainant
+        bean.complainantPhoneNo = complainantPhoneNo
+        bean.description = description
         launch({
-            RetrofitClient.apiService.addPublicComplain(
-                mapOf(
-                    "restId" to RestId,
-                    "restDirection" to RestDirection,
-                    "complainant" to complainant,
-                    "complainantPhoneNo" to complainantPhoneNo,
-                    "description" to description
-                )
-            ).apiData()
+            RetrofitClient.apiService.addPublicComplain(bean).apiData()
             publicComplainResult.value = true
-        })
+        }, error = {
+            thread {
+                RoomComplaintsHelper.addReadHistory(bean)
+            }
+            publicEvaluationResult.value = true
+        }, showErrorToast = false)
     }
 
     val publicEvaluationResult = MutableLiveData<Boolean>()
@@ -33,7 +36,7 @@ class ComplaintsViewModel : BaseViewModel() {
         bean.evaluateDescribe = evaluateDescribe
         bean.evaluator = evaluator
         bean.comprehensiveEvaluate = comprehensiveEvaluate
-        val map = hashMapOf<String, Any>()
+        val map = hashMapOf<String, Int>()
         type.forEach { dropBean ->
             map[dropBean.value] = dropBean.count
         }
@@ -41,7 +44,12 @@ class ComplaintsViewModel : BaseViewModel() {
         launch({
             RetrofitClient.apiService.addPublicEvaluation(bean).apiData()
             publicEvaluationResult.value = true
-        })
+        }, error = {
+            thread {
+                RoomHelper.addReadHistory(bean)
+            }
+            publicEvaluationResult.value = true
+        }, showErrorToast = true)
     }
 
     val evaluationGradeResult = MutableLiveData<ArrayList<DropDownBean>>()

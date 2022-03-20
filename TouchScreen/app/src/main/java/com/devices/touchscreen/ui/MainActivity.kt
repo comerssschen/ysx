@@ -1,5 +1,6 @@
 package com.devices.touchscreen.ui
 
+import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Environment
@@ -14,6 +15,7 @@ import com.devices.touchscreen.bean.RestInfoBean
 import com.devices.touchscreen.common.ActivityHelper
 import com.devices.touchscreen.common.BusHelper
 import com.devices.touchscreen.common.RestId
+import com.devices.touchscreen.room.OnPayingServie
 import com.devices.touchscreen.view.InputDialog
 import com.devices.touchscreen.viewmodel.MainViewModel
 import com.lake.banner.*
@@ -84,6 +86,7 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
 
     override fun initData() {
         super.initData()
+        startService(Intent(this, OnPayingServie::class.java))
         if (RestId.isEmpty()) {
             InputDialog(this@MainActivity) {
                 ActivityHelper.startActivity(ConfigActivity::class.java)

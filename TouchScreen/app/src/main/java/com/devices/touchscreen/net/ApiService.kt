@@ -44,7 +44,7 @@ interface ApiService {
     suspend fun submitConfig(@Body map: Map<String, Any?>): ApiResult<String?>
 
     @POST("public/service/evaluation/addPublicComplain")
-    suspend fun addPublicComplain(@Body map: Map<String, Any?>): ApiResult<String?>
+    suspend fun addPublicComplain(@Body map: AddPublicComplainBean): ApiResult<String?>
 
     @POST("v2/evaluation/record/save")
     suspend fun addPublicEvaluation(@Body map: EvaluateDetailBean): ApiResult<String?>

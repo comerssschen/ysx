@@ -8,6 +8,7 @@ import com.devices.touchscreen.base.MyApplication
 import com.devices.touchscreen.bean.RestInfoBean
 import com.devices.touchscreen.common.RestDirection
 import com.devices.touchscreen.common.RestId
+import com.devices.touchscreen.common.RestInfoSP
 import com.devices.touchscreen.net.RetrofitClient
 import java.io.File
 
@@ -31,8 +32,15 @@ class MainViewModel : BaseViewModel() {
                     }
                 }
             }
-            restInfoResult.value = RetrofitClient.apiService.getRestInfo(RestId, RestDirection).apiData()
+            RetrofitClient.apiService.getRestInfo(RestId, RestDirection).apiData().let {
+                restInfoResult.value = it
+                RestInfoSP = it
+            }
             refreshStatus.value = false
-        }, error = { refreshStatus.value = false })
+        }, error = {
+            refreshStatus.value = false
+            restInfoResult.value = RestInfoSP
+            downloadCodeResult.value = filePath
+        }, showErrorToast = false)
     }
 }
