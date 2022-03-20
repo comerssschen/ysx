@@ -10,7 +10,7 @@ class AddPublicComplainBean {
     var complainant: String? = null
     var complainantPhoneNo: String? = null
     var description: String? = null
-    var direction = RestDirection
+    var restDirection = RestDirection
     var restId = RestId
 
     @PrimaryKey

@@ -54,7 +54,7 @@ class ConfigViewModel : BaseViewModel() {
 
     val publicPagePhoto = MutableLiveData<BannerBean>()
     fun getInfo(restId: String = RestId, restDirection: String = RestDirection) {
-        if (RestId.isNotEmpty()) {
+        if (restId.isNotEmpty()) {
             launch({
                 publicPagePhoto.value = RetrofitClient.apiService.getPublicPagePhoto(restId, restDirection).apiData()
             }, isShowLoadding = false)
