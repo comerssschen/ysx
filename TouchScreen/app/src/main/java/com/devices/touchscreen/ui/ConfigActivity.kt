@@ -6,6 +6,7 @@ import android.media.MediaMetadataRetriever
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.FileUtils
@@ -27,6 +28,11 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import kotlinx.android.synthetic.main.activity_config.*
 import java.io.File
 import java.util.stream.Collectors
+import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener
+
+import com.devices.touchscreen.common.GlideEngine
+import com.luck.picture.lib.config.PictureMimeType
+
 
 class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config) {
     override fun viewModelClass() = ConfigViewModel::class.java
@@ -39,8 +45,20 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
         tvName.text = intent.getStringExtra("Name")
         tvRestDirection.text = intent.getStringExtra("RestDirectionName")
         ivBanner.setOnClickListener {
-            uploadType = 3
-            selectFile()
+            if (bannerUrl.isEmpty()) {
+                uploadType = 3
+                selectFile()
+            } else {
+                PictureSelector.create(this)
+                    .openPreview()
+                    .setImageEngine(GlideEngine.createGlideEngine())
+                    .setExternalPreviewEventListener(object : OnExternalPreviewEventListener {
+                        override fun onPreviewDelete(position: Int) {}
+                        override fun onLongPressDownload(media: LocalMedia): Boolean {
+                            return false
+                        }
+                    }).startActivityPreview(0, true, arrayListOf(LocalMedia.generateLocalMedia(bannerUrl, PictureMimeType.ofPNG())))
+            }
         }
         ivPhoto.setOnClickListener {
             uploadType = 1
@@ -58,6 +76,11 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
             }
             mViewModel.submitConfig(restId, restDirection, imageList.toTypedArray(), bannerUrl)
         }
+        ivDeletBanner.setOnClickListener {
+            bannerUrl = ""
+            ivBanner.setImageResource(R.drawable.take_photo)
+            ivDeletBanner.isVisible = bannerUrl.isNotEmpty()
+        }
     }
 
     private fun selectFile() {
@@ -71,6 +94,7 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
             )
 
         model.setImageEngine(GlideEngine.createGlideEngine())
+            .isWithSelectVideoImage(true)
             .setSelectionMode(SelectModeConfig.SINGLE)
             .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             .forResult(object : OnResultCallbackListener<LocalMedia> {
@@ -144,9 +168,35 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
             }
         }
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            uploadType = 2
-            mPosition = position
-            selectFile()
+//            uploadType = 2
+//            mPosition = position
+//            selectFile()
+            val imageLocalMedia = ArrayList<LocalMedia>()
+            imageList.forEach { url ->
+                if (url.endsWith("mp4") || url.endsWith("MP4")) {
+                    imageLocalMedia.add(LocalMedia.generateLocalMedia(url, PictureMimeType.ofPNG()))
+                } else {
+                    imageLocalMedia.add(LocalMedia.generateLocalMedia(url, PictureMimeType.ofPNG()))
+                }
+            }
+            PictureSelector.create(this)
+                .openPreview()
+                .setImageEngine(GlideEngine.createGlideEngine())
+                .setExternalPreviewEventListener(object : OnExternalPreviewEventListener {
+                    override fun onPreviewDelete(position: Int) {
+                        imageList.removeAt(position)
+                        mAdapter?.setList(imageList)
+                        if (imageList.size >= 5) {
+                            ivPhoto.visibility = View.GONE
+                        } else {
+                            ivPhoto.visibility = View.VISIBLE
+                        }
+                    }
+
+                    override fun onLongPressDownload(media: LocalMedia): Boolean {
+                        return true
+                    }
+                }).startActivityPreview(position, true, imageLocalMedia)
 
         }
         mAdapter?.addChildClickViewIds(R.id.ivDeletePhoto)
@@ -173,6 +223,7 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
         mViewModel.run {
             publicPagePhoto.observe(this@ConfigActivity) { bean ->
                 bannerUrl = bean.inPage ?: ""
+                ivDeletBanner.isVisible = bannerUrl.isNotEmpty()
                 Glide.with(this@ConfigActivity).load(bannerUrl).transform(RoundedCorners(ConvertUtils.dp2px(5f))).into(ivBanner)
                 imageList = bean.publicFrontPageList ?: ArrayList()
                 if (imageList.size >= 5) {
@@ -214,6 +265,7 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
             uploadImageResult.observe(this@ConfigActivity) {
                 if (uploadType == 3) {
                     bannerUrl = it
+                    ivDeletBanner.isVisible = bannerUrl.isNotEmpty()
                     Glide.with(this@ConfigActivity).load(it).transform(RoundedCorners(ConvertUtils.dp2px(5f))).into(ivBanner)
                 } else {
                     if (uploadType == 1) {
