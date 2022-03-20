@@ -49,7 +49,7 @@ class ComplaintsViewModel : BaseViewModel() {
                 RoomHelper.addReadHistory(bean)
             }
             publicEvaluationResult.value = true
-        }, showErrorToast = true)
+        }, showErrorToast = false)
     }
 
     val evaluationGradeResult = MutableLiveData<ArrayList<DropDownBean>>()

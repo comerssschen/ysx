@@ -5,7 +5,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.widget.VideoView;
 
-import com.lake.banner.uitls.LogUtils;
+import android.util.Log;
+
 import com.lake.banner.uitls.MD5Util;
 import com.lake.banner.view.CustomVideoView;
 
@@ -33,11 +34,11 @@ public class VideoLoader implements VideoViewLoaderInterface {
     public void onPrepared(Context context, Object path, VideoView videoView, String cachePath) {
         try {
             videoView.setOnPreparedListener(mp -> {
-                LogUtils.e("auto", "videoView onPrepared");
+                Log.i("test", "videoView onPrepared");
             });
             videoView.setOnErrorListener((MediaPlayer mp, int what, int extra) -> {
                 //视频读取失败！
-                LogUtils.e("auto", "videoView error=" + what);
+                Log.i("test", "videoView error=" + what);
                 return true;
             });
             if (path instanceof String) {
@@ -47,14 +48,15 @@ public class VideoLoader implements VideoViewLoaderInterface {
                 String type = pStr.substring(pStr.lastIndexOf("."));
                 File file = new File(cachePath + File.separator + MD5Util.md5(path.toString()) + type);
                 if (file.exists()) {
-                    LogUtils.e("lake", "onPrepared: isCache");
+                    Log.i("lake", "onPrepared: isCache");
                     videoView.setVideoURI(Uri.parse(file.getPath()));
                 } else {
-                    LogUtils.e("lake", "onPrepared: noCache");
+                    Log.i("lake", "onPrepared: noCache");
                     videoView.setVideoURI((Uri) path);
                 }
             }
             videoView.setOnCompletionListener((MediaPlayer mp) -> {
+                Log.i("test", "setOnCompletionListener");
                 mInterface.comlet();
             });
         } catch (Exception e) {
@@ -64,26 +66,26 @@ public class VideoLoader implements VideoViewLoaderInterface {
 
     @Override
     public void displayView(Context context, VideoView videoView) {
-        LogUtils.e("auto", "displayView: ");
+        Log.i("test", "displayView: ");
         videoView.seekTo(0);
         videoView.start();
     }
 
     @Override
     public void onResume(VideoView view) {
-        LogUtils.e("test", "onResume: ");
+        Log.i("test", "onResume: ");
         view.start();
     }
 
     @Override
     public void onStop(VideoView view) {
-        LogUtils.e("auto", "onStop: ");
+        Log.i("test", "onStop: ");
         view.pause();
     }
 
     @Override
     public void onDestroy(VideoView videoView) {
-        LogUtils.e("test", "onDestroy: ");
+        Log.i("test", "onDestroy: ");
         videoView.stopPlayback();
         System.gc();
     }

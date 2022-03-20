@@ -141,8 +141,9 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
     }
 
     override fun onResume() {
-        super.onResume()
+        Log.i("test", "MainActivity onResume")
         banner.onResume()
+        super.onResume()
     }
 
     override fun onPause() {
@@ -152,6 +153,7 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
     }
 
     override fun onStop() {
+        Log.i("test", "onStop")
         banner.onStop()
         super.onStop()
     }
