@@ -1,8 +1,9 @@
 package com.devices.touchscreen.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.devices.touchscreen.base.BaseViewModel
+import com.devices.touchscreen.bean.DropDownBean
+import com.devices.touchscreen.bean.EvaluateDetailBean
 import com.devices.touchscreen.common.RestDirection
 import com.devices.touchscreen.common.RestId
 import com.devices.touchscreen.net.RetrofitClient
@@ -26,30 +27,41 @@ class ComplaintsViewModel : BaseViewModel() {
     }
 
     val publicEvaluationResult = MutableLiveData<Boolean>()
-    fun addPublicEvaluation(satisfaction: Int, type: ArrayList<Int>, description: String) {
-        var typStr = ""
-        type.forEachIndexed { index, it ->
-            if (it > 0) {
-                typStr += "$index,"
-            }
+    fun addPublicEvaluation(comprehensiveEvaluate: Int, type: ArrayList<DropDownBean>, evaluateDescribe: String, evaluator: Int) {
+        val bean = EvaluateDetailBean()
+        bean.comprehensiveEvaluate = comprehensiveEvaluate
+        bean.evaluateDescribe = evaluateDescribe
+        bean.evaluator = evaluator
+        bean.comprehensiveEvaluate = comprehensiveEvaluate
+        val map = hashMapOf<String, Any>()
+        type.forEach { dropBean ->
+            map[dropBean.value] = dropBean.count
         }
-        if (typStr.endsWith(",")) {
-            typStr = typStr.substring(0, typStr.length - 1)
-        }
-        Log.i("test", "typStr= $typStr")
+        bean.evaluateDetail = map
         launch({
-            RetrofitClient.apiService.addPublicComplain(
-                mapOf(
-                    "restId" to RestId,
-                    "restDirection" to RestDirection,
-                    "satisfaction" to satisfaction,
-                    "type" to typStr,
-                    "otherTypeName" to "otherTypeName",
-                    "description" to description,
-                )
-            ).apiData()
+            RetrofitClient.apiService.addPublicEvaluation(bean).apiData()
             publicEvaluationResult.value = true
         })
     }
 
+    val evaluationGradeResult = MutableLiveData<ArrayList<DropDownBean>>()
+    fun evaluationGrade() {
+        launch({
+            evaluationGradeResult.value = RetrofitClient.apiService.evaluationGrade().apiData()
+        }, showErrorToast = false)
+    }
+
+    val evaluatorResult = MutableLiveData<ArrayList<DropDownBean>>()
+    fun evaluator() {
+        launch({
+            evaluatorResult.value = RetrofitClient.apiService.evaluator().apiData()
+        }, showErrorToast = false, isShowLoadding = false)
+    }
+
+    val evaluateTypeResult = MutableLiveData<ArrayList<DropDownBean>>()
+    fun evaluateType() {
+        launch({
+            evaluateTypeResult.value = RetrofitClient.apiService.evaluateType().apiData()
+        }, showErrorToast = false, isShowLoadding = false)
+    }
 }

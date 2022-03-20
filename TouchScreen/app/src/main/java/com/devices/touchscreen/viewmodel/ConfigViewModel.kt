@@ -2,6 +2,7 @@ package com.devices.touchscreen.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.devices.touchscreen.base.BaseViewModel
+import com.devices.touchscreen.bean.BannerBean
 import com.devices.touchscreen.bean.DropDownBean
 import com.devices.touchscreen.common.RestDirection
 import com.devices.touchscreen.common.RestId
@@ -17,7 +18,7 @@ class ConfigViewModel : BaseViewModel() {
     fun getDropdown() {
         launch({
             DropDownResult.value = RetrofitClient.apiService.getDropdown().apiData()
-        })
+        }, isShowLoadding = false)
     }
 
     val DirectionDropDownResult = MutableLiveData<ArrayList<DropDownBean>>()
@@ -49,5 +50,14 @@ class ConfigViewModel : BaseViewModel() {
         launch({
             uploadImageResult.value = RetrofitClient.apiService.uploadImage(part).apiData()?.fileUrl
         })
+    }
+
+    val publicPagePhoto = MutableLiveData<BannerBean>()
+    fun getInfo(restId: String = RestId, restDirection: String = RestDirection) {
+        if (RestId.isNotEmpty()) {
+            launch({
+                publicPagePhoto.value = RetrofitClient.apiService.getPublicPagePhoto(restId, restDirection).apiData()
+            }, isShowLoadding = false)
+        }
     }
 }

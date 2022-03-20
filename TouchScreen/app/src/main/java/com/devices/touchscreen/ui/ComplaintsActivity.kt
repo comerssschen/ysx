@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.RegexUtils
 import com.blankj.utilcode.util.ViewUtils
 import com.devices.touchscreen.R
 import com.devices.touchscreen.base.BaseVmActivity
+import com.devices.touchscreen.bean.DropDownBean
 import com.devices.touchscreen.common.ActivityHelper
 import com.devices.touchscreen.common.GlideEngine
 import com.devices.touchscreen.common.showToast
@@ -23,7 +24,7 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
     var mTimer: CountDownTimer? = null
     override fun initView() {
         super.initView()
-        mTimer = object : CountDownTimer(10000, 1000) {
+        mTimer = object : CountDownTimer(300000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
             }
 
@@ -84,14 +85,14 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
             }
         }
 
-        tvVerySatisfaction.setOnClickListener { pointNext(1) }
-        ivVerySatisfaction.setOnClickListener { pointNext(1) }
-        tvSatisfaction.setOnClickListener { pointNext(2) }
-        ivSatisfaction.setOnClickListener { pointNext(2) }
-        tvNoSatisfaction.setOnClickListener { pointNext(3) }
-        ivNoSatisfaction.setOnClickListener { pointNext(3) }
-        btRight.setOnClickListener { pointNext(4) }
-        btLeft.setOnClickListener { pointNext(5) }
+        tvVerySatisfaction.setOnClickListener { pointNext(evaluationGradeListValue[0]) }
+        ivVerySatisfaction.setOnClickListener { pointNext(evaluationGradeListValue[0]) }
+        tvSatisfaction.setOnClickListener { pointNext(evaluationGradeListValue[1]) }
+        ivSatisfaction.setOnClickListener { pointNext(evaluationGradeListValue[1]) }
+        tvNoSatisfaction.setOnClickListener { pointNext(evaluationGradeListValue[2]) }
+        ivNoSatisfaction.setOnClickListener { pointNext(evaluationGradeListValue[2]) }
+        btRight.setOnClickListener { pointNext(100) }
+        btLeft.setOnClickListener { pointNext(500) }
         tvCommitDirectly.setOnClickListener {
             group3.isVisible = false
             group4.isVisible = true
@@ -155,14 +156,23 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
                 showToast("您需要评星级才能提交")
                 return@setOnClickListener
             }
-            mViewModel.addPublicEvaluation(satisfaction, mListStatus, etEvaluation.toStr())
+            mViewModel.addPublicEvaluation(satisfaction, evaluateType, etEvaluation.toStr(), carType)
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        if (intent.getIntExtra("Type", 0) == 2) {
+//            mViewModel.evaluator()
+            mViewModel.evaluateType()
+            mViewModel.evaluationGrade()
         }
     }
 
     var satisfaction = 0
     private fun pointNext(status: Int) {
         when (status) {
-            4 -> {
+            100 -> {
                 if (mCureentPosition < 6) {
                     mCureentPosition++
                     notityImage()
@@ -171,7 +181,7 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
                     group4.isVisible = true
                 }
             }
-            5 -> {
+            500 -> {
                 if (mCureentPosition > 0) {
                     mCureentPosition--
                     notityImage()
@@ -181,7 +191,7 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
                 }
             }
             else -> {
-                mListStatus[mCureentPosition] = status
+                evaluateType[mCureentPosition].count = status
                 notityImage()
                 if (mCureentPosition < 6) {
                     mCureentPosition++
@@ -198,18 +208,18 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
 
     private fun notityImage() {
         tvCurrentNum.text = "${mCureentPosition + 1}/8"
-        tvTips.text = mListTips[mCureentPosition]
+        tvTips.text = evaluateType[mCureentPosition].label
         ivVerySatisfaction.setImageResource(R.drawable.very_satisfaction)
         ivSatisfaction.setImageResource(R.drawable.satisfaction)
         ivNoSatisfaction.setImageResource(R.drawable.no_satisfaction)
-        when (mListStatus[mCureentPosition]) {
-            1 -> {
+        when (evaluateType[mCureentPosition].count) {
+            evaluationGradeListValue[0] -> {
                 ivVerySatisfaction.setImageResource(R.drawable.very_satisfaction_select)
             }
-            2 -> {
+            evaluationGradeListValue[1] -> {
                 ivSatisfaction.setImageResource(R.drawable.satisfaction_select)
             }
-            3 -> {
+            evaluationGradeListValue[2] -> {
                 ivNoSatisfaction.setImageResource(R.drawable.no_satisfaction_select)
             }
         }
@@ -217,8 +227,6 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
     }
 
     var mCureentPosition = 0
-    var mListStatus = arrayListOf(0, 0, 0, 0, 0, 0, 0)
-    var mListTips = arrayListOf("停车服务", "卫生间清洁卫生", "餐饮价格", "商品价格", "汽车维修价格和质量", "加油站服务质量", "服务人员服务态度")
     private fun startEvaluation() {
         mCureentPosition = 0
         group2.isVisible = false
@@ -240,16 +248,51 @@ class ComplaintsActivity : BaseVmActivity<ComplaintsViewModel>(R.layout.activity
         startEvaluation()
     }
 
+    val evaluationGradeListValue = arrayListOf(1, 3, 5)
+    var evaluateType = arrayListOf(
+        DropDownBean("停车服务", "parkingEvaluate", 0),
+        DropDownBean("卫生间清洁卫生", "toiletPriceEvaluate", 0),
+        DropDownBean("餐饮价格", "cateringPriceEvaluate", 0),
+        DropDownBean("商品价格", "goodsPriceEvaluate", 0),
+        DropDownBean("汽车维修价格和质量", "garageEvaluate", 0),
+        DropDownBean("加油站服务质量", "oilEvaluate", 0),
+        DropDownBean("服务人员服务态度", "serviceEvaluate", 0)
+    )
+
     override fun observe() {
         super.observe()
         mViewModel.run {
+            evaluateTypeResult.observe(this@ComplaintsActivity) {
+                evaluateType = it
+            }
+            evaluatorResult.observe(this@ComplaintsActivity) {
+
+            }
+            evaluationGradeResult.observe(this@ComplaintsActivity) {
+                it.forEachIndexed { index, dropDownBean ->
+                    when (index) {
+                        0 -> {
+                            tvVerySatisfaction.text = dropDownBean.label
+                        }
+                        1 -> {
+                            tvSatisfaction.text = dropDownBean.label
+                        }
+                        2 -> {
+                            tvNoSatisfaction.text = dropDownBean.label
+                        }
+                    }
+                }
+                it.forEach { dropDownBean ->
+                    evaluationGradeListValue.add(dropDownBean.value.toInt())
+                }
+            }
             publicComplainResult.observe(this@ComplaintsActivity) {
-                ActivityHelper.startActivity(ComplaintsActivity::class.java, mapOf("type" to "投诉建议"))
-                ActivityHelper.finish(ComplaintsSucessActivity::class.java)
+                ActivityHelper.startActivity(ComplaintsSucessActivity::class.java, mapOf("type" to "投诉建议"))
+                ActivityHelper.finish(ComplaintsActivity::class.java)
             }
             publicEvaluationResult.observe(this@ComplaintsActivity) {
-                ActivityHelper.startActivity(ComplaintsActivity::class.java, mapOf("type" to "评价"))
-                ActivityHelper.finish(ComplaintsSucessActivity::class.java)
+                ActivityHelper.startActivity(ComplaintsSucessActivity::class.java, mapOf("type" to "评价"))
+                ActivityHelper.finish(ComplaintsActivity::class.java)
             }
         }
     }

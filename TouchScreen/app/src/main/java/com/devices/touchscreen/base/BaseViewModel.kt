@@ -36,8 +36,10 @@ open class BaseViewModel : ViewModel() {
                     showLoadding.value = true
                 }
                 block.invoke(this)
+                delay(1000)
                 showLoadding.value = false
             } catch (e: Exception) {
+                delay(1000)
                 showLoadding.value = false
                 when (e) {
                     is CancellationException -> {

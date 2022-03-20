@@ -19,6 +19,15 @@ interface ApiService {
     @GET("public/service/home/dropdown")
     suspend fun getDropdown(): ApiResult<ArrayList<DropDownBean>>
 
+    @GET("v2/evaluation/record/evaluator")
+    suspend fun evaluator(): ApiResult<ArrayList<DropDownBean>>
+
+    @GET("v2/evaluation/record/evaluationGrade")
+    suspend fun evaluationGrade(): ApiResult<ArrayList<DropDownBean>>
+
+    @GET("v2/evaluation/record/type")
+    suspend fun evaluateType(): ApiResult<ArrayList<DropDownBean>>
+
     @GET("public/service/home/getRestDirectionDropDown")
     suspend fun getRestDirectionDropDown(@Query("restId") restId: String?): ApiResult<ArrayList<DropDownBean>>
 
@@ -37,6 +46,6 @@ interface ApiService {
     @POST("public/service/evaluation/addPublicComplain")
     suspend fun addPublicComplain(@Body map: Map<String, Any?>): ApiResult<String?>
 
-    @POST("public/service/evaluation/addPublicEvaluation")
-    suspend fun addPublicEvaluation(@Body map: Map<String, Any?>): ApiResult<String?>
+    @POST("v2/evaluation/record/save")
+    suspend fun addPublicEvaluation(@Body map: EvaluateDetailBean): ApiResult<String?>
 }

@@ -1,142 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/clParent"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_block"
     tools:context=".ui.MainActivity">
 
-    <com.lake.banner.HBanner
-        android:id="@+id/banner"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clParent"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_block">
 
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:gravity="center"
-        android:textColor="@color/main_color"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/banner" />
+        <com.lake.banner.HBanner
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tvComplaints"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:drawableTop="@drawable/btn_complaint"
-        android:text="我要投诉"
-        android:textColor="@color/main_color"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/rlQrCode"
-        app:layout_constraintEnd_toStartOf="@+id/tvEvaluation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rlQrCode" />
-
-    <TextView
-        android:id="@+id/tvEvaluation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:drawableTop="@drawable/btn_appraise"
-        android:text="我要评价"
-        android:textColor="@color/main_color"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvComplaints"
-        app:layout_constraintTop_toTopOf="@+id/tvComplaints" />
-
-    <TextView
-        android:id="@+id/tvToQCode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:padding="5dp"
-        android:text="@string/toQrcode"
-        android:textColor="@color/main_color"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvComplaints" />
-
-
-    <RelativeLayout
-        android:id="@+id/rlQrCode"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_marginTop="30dp"
-        android:alpha="0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvName">
-
-        <ImageView
+        <TextView
+            android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:rotation="90"
-            android:src="@drawable/qrline" />
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:textColor="@color/main_color"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/banner" />
 
-        <ImageView
+        <TextView
+            android:id="@+id/tvComplaints"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:rotation="180"
-            android:src="@drawable/qrline" />
+            android:layout_marginTop="4dp"
+            android:drawableTop="@drawable/btn_complaint"
+            android:drawablePadding="10dp"
+            android:text="我要投诉"
+            android:textColor="@color/main_color"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/rlQrCode"
+            app:layout_constraintEnd_toStartOf="@+id/tvEvaluation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/rlQrCode" />
 
-        <ImageView
+        <TextView
+            android:id="@+id/tvEvaluation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/qrline" />
+            android:layout_marginTop="4dp"
+            android:drawableTop="@drawable/btn_appraise"
+            android:drawablePadding="10dp"
+            android:text="我要评价"
+            android:textColor="@color/main_color"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvComplaints"
+            app:layout_constraintTop_toTopOf="@+id/tvComplaints" />
 
-        <ImageView
+        <TextView
+            android:id="@+id/tvToQCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:rotation="270"
-            android:src="@drawable/qrline" />
+            android:layout_marginTop="50dp"
+            android:padding="5dp"
+            android:text="@string/toQrcode"
+            android:textColor="@color/main_color"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvComplaints" />
+
+        <RelativeLayout
+            android:id="@+id/rlQrCode"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_marginTop="30dp"
+            android:alpha="0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvName">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:rotation="90"
+                android:src="@drawable/qrline" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:rotation="180"
+                android:src="@drawable/qrline" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:src="@drawable/qrline" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:rotation="270"
+                android:src="@drawable/qrline" />
+
+            <ImageView
+                android:id="@+id/ivQrCode"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="30dp" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tvTips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:alpha="0"
+            android:gravity="center"
+            android:text="手机使用微信“扫一扫”\n打开手机版“公众评价”页面"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rlQrCode" />
 
         <ImageView
-            android:id="@+id/ivQrCode"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="30dp" />
-    </RelativeLayout>
-
-
-    <TextView
-        android:id="@+id/tvTips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:alpha="0"
-        android:gravity="center"
-        android:text="手机使用微信“扫一扫”\n打开手机版“公众评价”页面"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rlQrCode" />
-
-    <ImageView
-        android:id="@+id/ivBack"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/back"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTips" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:id="@+id/ivBack"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/back"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTips" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

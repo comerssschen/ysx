@@ -3,8 +3,12 @@ package com.devices.touchscreen.base
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.blankj.utilcode.util.BarUtils
+import com.blankj.utilcode.util.KeyboardUtils
+
 
 open class BaseActivity(val res: Int) : AppCompatActivity() {
     private lateinit var dialog: MyProgressFragment
@@ -30,12 +34,25 @@ open class BaseActivity(val res: Int) : AppCompatActivity() {
 
     open fun initView() {}
 
+    private fun isShouldHideKeyboard(v: View?, event: MotionEvent): Boolean {
+        if (v is EditText) {
+            val l = intArrayOf(0, 0)
+            v.getLocationOnScreen(l)
+            val left = l[0]
+            val top = l[1]
+            val bottom: Int = top + v.getHeight()
+            val right: Int = left + v.getWidth()
+            return !(event.rawX > left && event.rawX < right && event.rawY > top && event.rawY < bottom)
+        }
+        return false
+    }
+
     fun showProgressDialog() {
         if (!this::dialog.isInitialized) {
             dialog = MyProgressFragment.newInstance()
         }
         if (!dialog.isAdded) {
-            dialog.show(supportFragmentManager, false)
+            dialog.show(supportFragmentManager, true)
         }
     }
 
@@ -47,6 +64,10 @@ open class BaseActivity(val res: Int) : AppCompatActivity() {
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (ev.action == MotionEvent.ACTION_DOWN) {
+            val v = currentFocus
+            if (isShouldHideKeyboard(v, ev)) {
+                KeyboardUtils.hideSoftInput(this)
+            }
             if (!isAllowClick) {
                 return true
             }

@@ -10,6 +10,7 @@ import com.blankj.utilcode.util.ClickUtils
 import com.bumptech.glide.Glide
 import com.devices.touchscreen.R
 import com.devices.touchscreen.base.BaseVmActivity
+import com.devices.touchscreen.bean.RestInfoBean
 import com.devices.touchscreen.common.ActivityHelper
 import com.devices.touchscreen.common.BusHelper
 import com.devices.touchscreen.common.RestId
@@ -27,6 +28,10 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
     val list: MutableList<ViewItemBean> = ArrayList()
     override fun initView() {
         super.initView()
+        swipeRefreshLayout.setOnRefreshListener {
+            isUpdate = false
+            initData()
+        }
         banner.setViews(list)
             .setBannerAnimation(Transformer.Default) //换场方式
             .setBannerStyle(BannerStyle.CIRCLE_INDICATOR_TITLE) //指示器模式
@@ -41,7 +46,7 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
         clParent.setOnClickListener(object : ClickUtils.OnMultiClickListener(10) {
             override fun onTriggerClick(v: View?) {
                 InputDialog(this@MainActivity) {
-                    ActivityHelper.startActivity(ConfigActivity::class.java)
+                    ActivityHelper.startActivity(ConfigActivity::class.java, mapOf("Name" to mRestInfoResult?.restName, "RestDirectionName" to mRestInfoResult?.directionAliasName))
                 }.show()
             }
 
@@ -88,29 +93,44 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
         }
     }
 
+    var isUpdate = false
+    var mRestInfoResult: RestInfoBean? = null
     override fun observe() {
         super.observe()
         BusHelper.observe<Boolean>("BannerUpdate", this) {
+            isUpdate = true
             initData()
         }
         mViewModel.run {
+            refreshStatus.observe(this@MainActivity) {
+                swipeRefreshLayout.isRefreshing = it
+            }
             downloadCodeResult.observe(this@MainActivity) {
                 Glide.with(this@MainActivity).load(File(it)).into(ivQrCode)
             }
-            restInfoResult.observe(this@MainActivity) {
-                tvName.text = "${it.restName}（${it.directionAliasName}）\n 欢迎您！"
-            }
-            publicPagePhoto.observe(this@MainActivity) { bean ->
+            restInfoResult.observe(this@MainActivity) { bean ->
+                mRestInfoResult = bean
+                tvName.text = "${bean.restName}（${bean.directionAliasName}）\n 欢迎您！"
                 list.clear()
-                bean.publicFrontPageList?.forEach { url ->
+                bean.publicFrontPage?.split(",")?.forEach { url ->
                     if (url.endsWith(".mp4") || url.endsWith(".MP4")) {
                         list.add(ViewItemBean(BannerConfig.VIDEO, null, Uri.parse(url), BannerConfig.MAXTIME))
                     } else {
                         list.add(ViewItemBean(BannerConfig.IMAGE, null, Uri.parse(url), BannerConfig.TIME))
                     }
                 }
-                banner.update(list)
-
+                if (isUpdate) {
+                    banner.visibility = View.INVISIBLE
+                    banner.update(list)
+                    banner.onPause()
+                    banner.postDelayed({
+                        banner.update(list)
+                        banner.onResume()
+                        banner.visibility = View.VISIBLE
+                    }, 3000)
+                } else {
+                    banner.update(list)
+                }
                 tvComplaints.setOnClickListener { ActivityHelper.startActivity(ComplaintsActivity::class.java, mapOf("BannerUrl" to bean.inPage, "Type" to 1)) }
                 tvEvaluation.setOnClickListener { ActivityHelper.startActivity(ComplaintsActivity::class.java, mapOf("BannerUrl" to bean.inPage, "Type" to 2)) }
             }
@@ -132,6 +152,4 @@ class MainActivity : BaseVmActivity<MainViewModel>(R.layout.activity_main) {
         banner.onStop()
         super.onStop()
     }
-
-
 }

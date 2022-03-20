@@ -16,15 +16,10 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.devices.touchscreen.R
 import com.devices.touchscreen.base.BaseVmActivity
 import com.devices.touchscreen.bean.DropDownBean
-import com.devices.touchscreen.common.ActivityHelper
-import com.devices.touchscreen.common.BusHelper
-import com.devices.touchscreen.common.GlideEngine
-import com.devices.touchscreen.common.showToast
+import com.devices.touchscreen.common.*
 import com.devices.touchscreen.view.BaseDropDialog
 import com.devices.touchscreen.viewmodel.ConfigViewModel
 import com.luck.picture.lib.basic.PictureSelector
-import com.luck.picture.lib.config.PictureConfig
-import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.config.SelectModeConfig
 import com.luck.picture.lib.entity.LocalMedia
@@ -41,6 +36,8 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
     private var imageList = ArrayList<String>()
     override fun initView() {
         super.initView()
+        tvName.text = intent.getStringExtra("Name")
+        tvRestDirection.text = intent.getStringExtra("RestDirectionName")
         ivBanner.setOnClickListener {
             uploadType = 3
             selectFile()
@@ -103,7 +100,11 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
             BitmapFactory.decodeFile(realPath).apply {
                 Log.i("test", "width= $width,,hight = $height")
                 if (width != 1080) return false
-                if (height != 608 || height != 400) return false
+                if (uploadType == 3) {
+                    if (height != 400) return false
+                } else {
+                    if (height != 608) return false
+                }
                 return true
             }
         } else if (realPath.endsWith("mp4") || realPath.endsWith("MP4")) {
@@ -123,6 +124,7 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
 
     override fun initData() {
         super.initData()
+        mViewModel.getInfo()
         mViewModel.getDropdown()
         tvRestDirection.setOnClickListener {
             if (restId.isEmpty()) {
@@ -169,6 +171,19 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
     override fun observe() {
         super.observe()
         mViewModel.run {
+            publicPagePhoto.observe(this@ConfigActivity) { bean ->
+                bannerUrl = bean.inPage ?: ""
+                Glide.with(this@ConfigActivity).load(bannerUrl).transform(RoundedCorners(ConvertUtils.dp2px(5f))).into(ivBanner)
+                imageList = bean.publicFrontPageList ?: ArrayList()
+                if (imageList.size >= 5) {
+                    ivPhoto.visibility = View.GONE
+                } else {
+                    ivPhoto.visibility = View.VISIBLE
+                }
+                mAdapter?.setNewInstance(imageList)
+                restId = bean.restId ?: ""
+                restDirection = bean.restDirection ?: ""
+            }
             submitConfigResult.observe(this@ConfigActivity) {
                 BusHelper.post("BannerUpdate", true)
                 ActivityHelper.finish(ConfigActivity::class.java)
@@ -178,7 +193,12 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
                 tvName.setOnClickListener {
                     BaseDropDialog(this@ConfigActivity, "选择服务区", keyList, 0) {
                         tvName.text = keyList[it]
-                        restId = list[it].value
+                        if (restId != list[it].value) {
+                            restId = list[it].value
+                            tvRestDirection.text = ""
+                            restDirection = ""
+                        }
+
                     }.show()
                 }
             }
@@ -188,6 +208,7 @@ class ConfigActivity : BaseVmActivity<ConfigViewModel>(R.layout.activity_config)
                 BaseDropDialog(this@ConfigActivity, "选择服务区方向", childList, 0) {
                     tvRestDirection.text = childList[it]
                     restDirection = list[it].value
+                    mViewModel.getInfo(restId, restDirection)
                 }.show()
             }
             uploadImageResult.observe(this@ConfigActivity) {

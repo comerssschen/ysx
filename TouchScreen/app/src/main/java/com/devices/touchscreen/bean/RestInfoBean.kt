@@ -6,4 +6,6 @@ data class RestInfoBean(
     val directionAliasName: String?,
     val restId: String?,
     val restName: String?,
+    val publicFrontPage: String?,
+    val inPage: String?,
 )
